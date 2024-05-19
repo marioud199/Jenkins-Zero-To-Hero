@@ -41,10 +41,10 @@ pipeline {
       }
     }
     stage('Update Deployment File') {
-        environment {
-            GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
-            GIT_USER_NAME = "iam-veeramalla"
-        }
+       // environment {
+           // GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
+         //   GIT_USER_NAME = "iam-veeramalla"
+       // }
         steps {
             withCredentials([string(credentialsId: 'github-id', variable: 'GITHUB_TOKEN')]) {
                 sh '''
