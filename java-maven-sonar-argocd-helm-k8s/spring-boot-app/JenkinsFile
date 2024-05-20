@@ -9,12 +9,18 @@ pipeline {
     stage('Setup GLIBC') {
       steps {
         sh '''
-          apk update
-          apk add --no-cache wget
-          wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-          wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.32-r0/glibc-2.32-r0.apk
-          apk add glibc-2.32-r0.apk
-          rm glibc-2.32-r0.apk
+          apt-get update
+          apt-get install -y wget
+          wget -q -O /tmp/glibc-2.32.tar.gz https://ftp.gnu.org/gnu/libc/glibc-2.32.tar.gz
+          tar -xzf /tmp/glibc-2.32.tar.gz -C /tmp
+          cd /tmp/glibc-2.32
+          mkdir build
+          cd build
+          ../configure --prefix=/usr/local/glibc-2.32
+          make
+          make install
+          rm -rf /tmp/glibc-2.32*
+          export LD_LIBRARY_PATH=/usr/local/glibc-2.32/lib:$LD_LIBRARY_PATH
         '''
       }
     }
