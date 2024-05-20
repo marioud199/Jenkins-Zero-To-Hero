@@ -6,21 +6,22 @@ pipeline {
     }
   }
   stages {
-    stage('Setup GLIBC') {
+   stage('Setup GLIBC') {
       steps {
         sh '''
           apt-get update
-          apt-get install -y wget
+          apt-get install -y wget build-essential
           wget -q -O /tmp/glibc-2.32.tar.gz https://ftp.gnu.org/gnu/libc/glibc-2.32.tar.gz
           tar -xzf /tmp/glibc-2.32.tar.gz -C /tmp
           cd /tmp/glibc-2.32
           mkdir build
           cd build
           ../configure --prefix=/usr/local/glibc-2.32
-          make
+          make -j$(nproc)
           make install
           rm -rf /tmp/glibc-2.32*
-          export LD_LIBRARY_PATH=/usr/local/glibc-2.32/lib:$LD_LIBRARY_PATH
+          echo 'export LD_LIBRARY_PATH=/usr/local/glibc-2.32/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+          source ~/.bashrc
         '''
       }
     }
